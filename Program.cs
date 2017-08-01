@@ -14,7 +14,7 @@ namespace fb_groups_intersector
             if (args.Length != 3)
             {
                 Console.WriteLine("Usage: fb_groups_intersector sourceGroupId targetGroupId accessToken");
-                Console.WriteLine("Usage: fb_groups_intersector 200429360160731 647709162072194 EAAC...UZD");
+                Console.WriteLine("E.g.: fb_groups_intersector 200429360160731 647709162072194 EAAC...UZD");
 
                 Environment.Exit(1);
             }
@@ -61,7 +61,7 @@ namespace fb_groups_intersector
         private static void LoadMemebrsByUrl(List<GroupMember> members, HttpClient httpClient, string url)
         {
             string sourceMembersRequest = "{}";
-            for (int i = 3 - 1; i >= 0; i--)
+            for (int i = 0; i < 3; i++)
             {
                 try
                 {
@@ -71,7 +71,7 @@ namespace fb_groups_intersector
                 {
                     Console.WriteLine($"Retry {i}");
                     Task.Delay(TimeSpan.FromSeconds(10));
-                    if (i == 0)
+                    if (i == 2)
                     {
                         throw;
                     }
