@@ -1,4 +1,5 @@
 Facebook group members list intersector.
+
 Usage: fb_groups_intersector sourceGroupId targetGroupId accessToken
 E.g.: fb_groups_intersector 200429360160731 647709162072194 EAAC...UZD
 
