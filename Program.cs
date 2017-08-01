@@ -11,20 +11,21 @@ namespace fb_groups_intersector
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
-            var accessToken = "EAACEdEose0cBAMjynsM9ZCZBTtcAHZBGFtZAW66iWFY7ZCQRB6NifZAeVhWXnqBZAGAOMo2LAkotX5HkjBFhPGna6W6cAXSaQKJDc46kZAvP1yOSARhuPXQ43e0b4C1glsHajXF0tpRBKnSznsCaxUPBw7FuMzCL8hQhfWy2YOrSSD6QtMfbNNFa3uSDKfC1oPQZD";
+            if (args.Length != 3)
+            {
+                Console.WriteLine("Usage: fb_groups_intersector sourceGroupId targetGroupId accessToken");
+                Console.WriteLine("Usage: fb_groups_intersector 200429360160731 647709162072194 EAAC...UZD");
 
-            //"246401099154708" - // yazhe mat' 
-            //"1428660687388397"; // Shritlits
-            // "582593101850963" // MK
-            // 108935396446747 test
+                Environment.Exit(1);
+            }
+
+            var sourceGroupId = args[0];
+            var targetGroupId = args[1];
+            var accessToken = args[2];
+
+            Console.WriteLine($"Starting intersecting group id = {sourceGroupId} against group id = {targetGroupId}");
 
             var sourceMembers = new List<GroupMember>();
-
-
-            var sourceGroupId = "582593101850963";
-            var targetGroupId = "246401099154708";
-
             LoadMembers(sourceGroupId, accessToken, sourceMembers);
 
             var targetGroupMembers = new List<GroupMember>();
@@ -34,21 +35,16 @@ namespace fb_groups_intersector
                 sourceMembers.Join(targetGroupMembers, i => i.id, i => i.id, (a, b) => b)
                     .ToList();
 
-            Console.WriteLine($"Intersected Count: {intersectedMemebers.Count:N0}");
             Console.WriteLine(JsonConvert.SerializeObject(intersectedMemebers, Formatting.Indented));
-            
+            Console.WriteLine($"Intersected Count: {intersectedMemebers.Count:N0}");
 
-            System.IO.File.WriteAllLines($"GroupId_{sourceGroupId}_vs_Group_{targetGroupId}", new[]
+            var resultFile = $"GroupId_{sourceGroupId}_vs_Group_{targetGroupId}";
+            System.IO.File.WriteAllLines(resultFile, new[]
             {
                 JsonConvert.SerializeObject(intersectedMemebers, Formatting.Indented)
             });
 
-            var intersectedIds = sourceMembers.Select(i => i.id)
-                .Intersect(targetGroupMembers.Select(i => i.id))
-                .ToList();
-
-            Console.WriteLine($"IntersectedIds Count: {intersectedIds.Count:N0}");
-            Console.WriteLine(JsonConvert.SerializeObject(intersectedIds, Formatting.Indented));
+            Console.WriteLine($"results saved as {resultFile}");
 
             Console.ReadLine();
         }
@@ -84,8 +80,8 @@ namespace fb_groups_intersector
 
             var groupMembersResponse = JsonConvert.DeserializeObject<GroupMembersResponse>(sourceMembersRequest);
             Console.WriteLine(url);
-            Console.WriteLine(members.Count);
             members.AddRange(groupMembersResponse.data);
+            Console.WriteLine($"loaded: {groupMembersResponse.data.Length:N0}, total loaded by now: {members.Count:N0} ");
 
             if (!string.IsNullOrWhiteSpace(groupMembersResponse.paging?.next))
             {
