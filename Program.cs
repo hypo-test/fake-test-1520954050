@@ -54,11 +54,11 @@ namespace fb_groups_intersector
             var firstPageUrl = $"https://graph.facebook.com/v2.10/{sourceGroupId}/members?access_token={accessToken}&limit=1000";
             using (var httpClient = new HttpClient())
             {
-                LoadMemebrsByUrl(members, httpClient, firstPageUrl);
+                LoadMembersByUrl(members, httpClient, firstPageUrl);
             }
         }
 
-        private static void LoadMemebrsByUrl(List<GroupMember> members, HttpClient httpClient, string url)
+        private static void LoadMembersByUrl(List<GroupMember> members, HttpClient httpClient, string url)
         {
             string sourceMembersRequest = "{}";
             for (int i = 0; i < 3; i++)
@@ -85,7 +85,7 @@ namespace fb_groups_intersector
 
             if (!string.IsNullOrWhiteSpace(groupMembersResponse.paging?.next))
             {
-                LoadMemebrsByUrl(members, httpClient, groupMembersResponse.paging.next);
+                LoadMembersByUrl(members, httpClient, groupMembersResponse.paging.next);
             }
         }
     }
